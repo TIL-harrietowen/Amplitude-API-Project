@@ -7,7 +7,6 @@ import boto3
 import logging
 from datetime import datetime
 from pathlib import Path
-from modules.upload_json_to_s3 import upload_json_to_S3
 
 #logging configuration
 log_dir = 'logs'
@@ -49,7 +48,7 @@ files = list(data_dir.glob(f'*.json'))
 processed = 0
 for file in files:
     filename = os.path.basename(file)
-    s3_filename = f'python-import/{filename}'
+    s3_filename = f'{bucket_object}/{filename}'
 
     try:
         s3_client.upload_file(file,bucket,s3_filename)
