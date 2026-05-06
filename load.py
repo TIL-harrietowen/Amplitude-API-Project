@@ -8,11 +8,13 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-#logging configuration
-log_dir = 'logs'
-os.makedirs(log_dir,exist_ok=True)
+
+#----------------------------------------------------------------------------------------------------------#
+# Create and set log filepath location
+log_dir = './logs'
+os.makedirs(log_dir, exist_ok=True)
 timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-log_filename = f'{log_dir}/load_{timestamp}.log'
+log_filename = f"{log_dir}/Amplitude_Load_{timestamp}.log"
 
 logging.basicConfig(
     filename=log_filename,

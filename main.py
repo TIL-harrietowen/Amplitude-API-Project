@@ -15,8 +15,10 @@ import logging
 from datetime import datetime
 
 # Create and set log filepath location
-os.makedirs("./logs", exist_ok=True)
-log_filename = f"./logs/logging_amplitude_API_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+log_dir = './logs'
+os.makedirs(log_dir, exist_ok=True)
+timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+log_filename = f"{log_dir}/Amplitude_Extract_{timestamp}.log"
 
 # Configure logs to retrieve INFO messages and higher
 logging.basicConfig(
