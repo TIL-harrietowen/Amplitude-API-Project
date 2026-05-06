@@ -5,3 +5,5 @@
 *.log
 /output*
 *.json
+/aws
+/course_docs
