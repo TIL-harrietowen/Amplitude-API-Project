@@ -85,7 +85,7 @@ else:
             with gzip.open(f"{temp_path}/{name}", 'rb') as f:
                 log.info(".gz files read")
                 #create the name and location to output .gz files
-                output_name = name.replace(".gz", "")
+                output_name = os.path.basename(name)[:-3]
                 output_path = f"./output/{output_name}"
                 os.makedirs(os.path.dirname(output_path), exist_ok=True)
                 log.info(f"Output directory created: {os.path.dirname(output_path)}")
