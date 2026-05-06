@@ -7,3 +7,4 @@
 *.json
 /aws
 /course_docs
+*test_upload.json
