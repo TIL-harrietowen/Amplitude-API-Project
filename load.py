@@ -16,6 +16,7 @@ os.makedirs(log_dir, exist_ok=True)
 timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 log_filename = f"{log_dir}/Amplitude_Load_{timestamp}.log"
 
+#Set logging configuration
 logging.basicConfig(
     filename=log_filename,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -25,10 +26,12 @@ logging.basicConfig(
 log = logging.getLogger()
 log.info('Logger intialised')
 
+#----------------------------------------------------------------------------------------------------------#
 #load in environment variables
 load_dotenv()
 log.info("Environment variables loaded")
 
+#----------------------------------------------------------------------------------------------------------#
 #AWS variables
 aws_key = os.getenv('AWS_KEY_ID')
 aws_secret = os.getenv('AWS_SECRET_KEY')
