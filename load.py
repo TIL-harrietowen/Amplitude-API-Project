@@ -38,6 +38,11 @@ aws_secret = os.getenv('AWS_SECRET_KEY')
 bucket = os.getenv('BUCKET')
 bucket_object = os.getenv('BUCKET_OBJECT')
 
+if not aws_key or not aws_secret:
+    log.error("AWS credentials missing. Check AWS_API_KEY and AWS_SECRET_KEY in environment variables.")
+else:
+    log.info("AWS credentials loaded successfully.")
+
 #configure S3 client
 s3_client = boto3.client(
     's3',
@@ -66,4 +71,4 @@ for file in files:
     except Exception as e:
             log.error(e)
 
-log.info(f'Finished uploading {processed} files')
+log.info(f'{processed} files uploaded to {bucket}/{bucket_object}')
