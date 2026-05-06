@@ -13,21 +13,26 @@ import shutil
 
 import logging
 from datetime import datetime
+import time
 
+#----------------------------------------------------------------------------------------------------------#
 # Create and set log filepath location
-os.makedirs("./logs", exist_ok=True)
-log_filename = f"./logs/logging_amplitude_API_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+log_dir = './logs'
+os.makedirs(log_dir, exist_ok=True)
+timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+log_filename = f"{log_dir}/Amplitude_Extract_{timestamp}.log"
 
-# Configure logs to retrieve INFO messages and higher
+#Set logging configuration
 logging.basicConfig(
-    level=logging.INFO, 
+    filename=log_filename,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    filename=log_filename
+    level=logging.INFO
 )
 
 log = logging.getLogger()
-log.info(f"Logging initialised, writing to {log_filename}")
+log.info('Logger intialised')
 
+#----------------------------------------------------------------------------------------------------------#
 #load environment variables
 load_dotenv()
 log.info("Environment Variables Read")
@@ -58,46 +63,55 @@ log.info(f"Sending GET request to {url}")
 response = requests.get(url, params=params, auth=(api_key, api_secret))
 log.info(f"Response received, content size: {len(response.content)} bytes")
 
-#check API response
+#----------------------------------------------------------------------------------------------------------#
+#variables required for API response handling
 status = response.status_code
-if status != 200:
-    print(f"Connection was unsuccessful, status_code: {status}")
-    log.error(f"API connection was unsuccessful, status code: {status}.")
+temp_dir = "./temp"
+data_dir = "./output"
+processed = 0
 
-else:
+if 200 <= status < 300:
     print(f"Connection was successful, status code: {status}")
     log.info(f"API connection was successful, status code: {status}.")
 
-    #read file in memory
+    #read file into memory
     file_object = io.BytesIO(response.content)
-    log.info("Response content loaded in memory")
-        
-    with zipfile.ZipFile(file_object) as z:
-        #extract the files into a temp folder
-        temp_path = "./temp"
-        z.extractall(temp_path)
-        log.info(f".gz files extracted to temp folder: {temp_path}")
+    log.info("Response content loaded into memory")
 
-        #loop through each .gz file
-        processed = 0
+    #first zip file extraction into a temporary directory  
+    with zipfile.ZipFile(file_object) as z:
+        z.extractall(temp_dir)
+        log.info(f".gz files extracted into the temp directory: {temp_dir}")
+
+        #second zip file extraction into an data output directory
+        log.info(f"Starting to read and extract files inside {temp_dir}")
         for name in z.namelist():
-            #read the .gz files
-            with gzip.open(f"{temp_path}/{name}", 'rb') as f:
-                log.info(".gz files read")
-                #create the name and location to output .gz files
+
+            #read in the .gz files as bytes from the temporary directory
+            with gzip.open(f"{temp_dir}/{name}", 'rb') as f:
+
+                #create variables for the name and location to output .gz files to
                 output_name = os.path.basename(name)[:-3]
-                output_path = f"./output/{output_name}"
+                output_path = f"{data_dir}/{output_name}"
+
+                #create the data output directory
                 os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                log.info(f"Output directory created: {os.path.dirname(output_path)}")
+
                 #write the json files to the new output folder
                 with open(output_path, "wb") as files:
                     shutil.copyfileobj(f, files)
+                
+                #count the number of files processed
                 processed +=1
         
         log.info(f"Finished processing {processed} file(s)")
 
         #delete the temp folder to clean up
-        shutil.rmtree(temp_path)
-        log.info(f"Temporary folder deleted: {temp_path}")
+        shutil.rmtree(temp_dir)
+        log.info(f"Temporary folder deleted: {temp_dir}")
+
+else:
+    print(f"Error: {status} {response.get("message", "no message found")}")
+    log.error(f"Error: {status} {response.get("message", "no message found")}")
 
 log.info("API Extraction Finished")

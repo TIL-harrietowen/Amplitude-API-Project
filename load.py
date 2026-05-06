@@ -8,12 +8,15 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
-#logging configuration
-log_dir = 'logs'
-os.makedirs(log_dir,exist_ok=True)
-timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-log_filename = f'{log_dir}/load_{timestamp}.log'
 
+#----------------------------------------------------------------------------------------------------------#
+# Create and set log filepath location
+log_dir = './logs'
+os.makedirs(log_dir, exist_ok=True)
+timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+log_filename = f"{log_dir}/Amplitude_Load_{timestamp}.log"
+
+#Set logging configuration
 logging.basicConfig(
     filename=log_filename,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -23,15 +26,22 @@ logging.basicConfig(
 log = logging.getLogger()
 log.info('Logger intialised')
 
+#----------------------------------------------------------------------------------------------------------#
 #load in environment variables
 load_dotenv()
 log.info("Environment variables loaded")
 
+#----------------------------------------------------------------------------------------------------------#
 #AWS variables
 aws_key = os.getenv('AWS_KEY_ID')
 aws_secret = os.getenv('AWS_SECRET_KEY')
 bucket = os.getenv('BUCKET')
 bucket_object = os.getenv('BUCKET_OBJECT')
+
+if not aws_key or not aws_secret:
+    log.error("AWS credentials missing. Check AWS_API_KEY and AWS_SECRET_KEY in environment variables.")
+else:
+    log.info("AWS credentials loaded successfully.")
 
 #configure S3 client
 s3_client = boto3.client(
@@ -61,4 +71,4 @@ for file in files:
     except Exception as e:
             log.error(e)
 
-log.info(f'Finished uploading {processed} files')
+log.info(f'{processed} files uploaded to {bucket}/{bucket_object}')
