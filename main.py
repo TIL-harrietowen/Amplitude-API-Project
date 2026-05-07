@@ -38,10 +38,10 @@ load_dotenv()
 log.info("Environment Variables Read")
 
 #load api credentials
-api_key = os.getenv('AMP_API_KEY')
-api_secret = os.getenv('AMP_SECRET_KEY')
+AMP_API_KEY = os.getenv('AMP_API_KEY')
+AMP_SECRET_KEY = os.getenv('AMP_SECRET_KEY')
 
-if not api_key or not api_secret:
+if not AMP_API_KEY or not AMP_SECRET_KEY:
     log.error("API credentials missing. Check AMP_API_KEY and AMP_SECRET_KEY in environment variables.")
 else:
     log.info("API credentials loaded successfully.")
@@ -60,7 +60,7 @@ params = {
 
 #GET request
 log.info(f"Sending GET request to {url}")
-response = requests.get(url, params=params, auth=(api_key, api_secret))
+response = requests.get(url, params=params, auth=(AMP_API_KEY, AMP_SECRET_KEY))
 log.info(f"Response received, content size: {len(response.content)} bytes")
 
 #----------------------------------------------------------------------------------------------------------#
