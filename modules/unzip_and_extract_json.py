@@ -14,7 +14,7 @@ from datetime import datetime
 
 log = logging.getLogger(__name__)
 
-def extract_json_files(url,params,API_KEY,API_SECRET_KEY,data_dir):
+def extractJsonFiles(url,params,API_KEY,API_SECRET_KEY,data_dir):
     """This function will unzip a file into a temporary folder and then unzip all .gz files into a desired directory.
         The temporary folder will be deleted afterwards.
 

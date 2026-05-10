@@ -6,10 +6,9 @@ import logging
 import boto3
 
 log = logging.getLogger(__name__)
-from pathlib import Path
 
 #Function
-def load(AWS_KEY_ID, AWS_SECRET_KEY, BUCKET, BUCKET_OBJECT, data_dir):
+def loadJson(AWS_KEY_ID, AWS_SECRET_KEY, BUCKET, BUCKET_OBJECT, data_dir):
     """This will load any json files in the data directory to a specified S3 bucket.
 
 
