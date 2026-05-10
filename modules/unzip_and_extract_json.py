@@ -3,9 +3,7 @@
 #imports
 import os
 import requests
-from dotenv import load_dotenv
 
-import json
 import io
 import zipfile
 import gzip
