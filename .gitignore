@@ -5,6 +5,5 @@
 *.log
 /output*
 *.json
-/aws
 /course_docs
-*test_upload.json
+/aws/week_2
