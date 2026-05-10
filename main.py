@@ -43,12 +43,14 @@ response = requests.get(url, params=params, auth=(API_KEY, API_SECRET_KEY))
 log.info(f"Response received, content size: {len(response.content)} bytes")
 
 
-#
+#extract JSON files from the Amplitude API response and upload them to S3
 if extractJsonFiles(url,params,API_KEY,API_SECRET_KEY,'output'):
+#if the extract step succeeds, the JSON files in the output directory are uploaded to the configured S3 bucket
     data_dir = Path('output')
     loadJson(AWS_KEY_ID, AWS_SECRET_KEY, BUCKET, BUCKET_OBJECT, data_dir)
     log.info('Scripts ran successfully')
     print('Scripts ran successfully')
+#if the extract step fails, the script stops and logs the error
 else:
     log.error('Extract failed. Script stopped.')
     print('Extract failed. Script stopped.')
