@@ -1,0 +1,36 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        "s3:ListBucket",
+        "s3:GetBucketLocation",
+        "s3:ListBucketMultipartUploads",
+        "s3:AbortMultipartUpload",
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:GenerateDataKey",
+        "kms:Encrypt"
+      ],
+      "Resource": [
+        "arn:aws:s3:::<your-name>-amplitude-storage/python-import",
+        "arn:aws:s3:::<your-name>-amplitude-storage/python-import/*",
+        "arn:aws:kms:eu-west-2:<account-id>:key/<KeyId>"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket", "s3:GetObject", "s3:GetBucketLocation"],
+      "Resource": "arn:aws:s3:::<your-name>-amplitude-storage",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": ["python-import/*", "python-import"]
+        }
+      }
+    }
+  ]
+}
