@@ -20,8 +20,8 @@ log.info("Environment Variables Read")
 #Load API Info
 API_KEY = os.getenv('AMP_API_KEY')
 API_SECRET_KEY = os.getenv('AMP_SECRET_KEY')
-start_time = '20260428T00'
-end_time = '20260429T23'
+start_time = '20260514T02'
+end_time = '20260514T03'
 log.info(f"Export window set: start={start_time}, end={end_time}")
 
 #API request setup
