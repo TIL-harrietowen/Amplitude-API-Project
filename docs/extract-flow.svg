@@ -1,0 +1,84 @@
+<svg width="680" height="630" viewBox="0 0 680 630" xmlns="http://www.w3.org/2000/svg" role="img">
+  <title>Amplitude extract process</title>
+  <desc>Flowchart showing the steps to extract data from the Amplitude Export API.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#6B6B6B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
+      .label-sub { font-size: 12px; fill: #555; }
+      .label-title { font-size: 14px; font-weight: 600; fill: #1a1a1a; }
+      .caption { font-size: 12px; fill: #888; }
+      .fail-label { font-size: 11px; fill: #aaa; }
+      .loop-label { font-size: 11px; fill: #aaa; }
+      .connector { stroke: #9CA3AF; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+      .connector-dashed { stroke: #C4C4C4; stroke-width: 1.2; fill: none; stroke-dasharray: 5 4; }
+    </style>
+  </defs>
+
+  <rect width="680" height="630" fill="#ffffff"/>
+
+  <!-- Caption -->
+  <text class="caption" x="340" y="26" text-anchor="middle">main.py calls extractJsonFiles()</text>
+
+  <!-- Step 1: GET request — teal -->
+  <rect x="200" y="40" width="280" height="50" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+  <text class="label-title" x="340" y="62" text-anchor="middle">GET request to Amplitude API</text>
+  <text class="label-sub" x="340" y="79" text-anchor="middle">url + params (start, end) + Basic Auth</text>
+  <line x1="340" y1="90" x2="340" y2="118" class="connector"/>
+
+  <!-- Step 2: Check status — purple -->
+  <rect x="200" y="120" width="280" height="50" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+  <text class="label-title" x="340" y="142" text-anchor="middle" fill="#26215C">Check HTTP status code</text>
+  <text class="label-sub" x="340" y="159" text-anchor="middle" fill="#534AB7">2xx = proceed · else log error + stop</text>
+
+  <!-- Fail branch -->
+  <path d="M480 145 L560 145 L560 548 L482 548" class="connector-dashed" marker-end="none"/>
+  <line x1="560" y1="548" x2="484" y2="548" stroke="#C4C4C4" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+  <text class="fail-label" x="568" y="350">fail</text>
+
+  <line x1="340" y1="170" x2="340" y2="198" class="connector"/>
+
+  <!-- Step 3: BytesIO — teal -->
+  <rect x="200" y="200" width="280" height="50" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+  <text class="label-title" x="340" y="222" text-anchor="middle">Read response into memory</text>
+  <text class="label-sub" x="340" y="239" text-anchor="middle">io.BytesIO — no disk write yet</text>
+  <line x1="340" y1="250" x2="340" y2="278" class="connector"/>
+
+  <!-- Step 4: Extract ZIP — teal -->
+  <rect x="200" y="280" width="280" height="50" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+  <text class="label-title" x="340" y="302" text-anchor="middle">Extract outer ZIP</text>
+  <text class="label-sub" x="340" y="319" text-anchor="middle">zipfile.ZipFile → .gz files into temp/</text>
+  <line x1="340" y1="330" x2="340" y2="358" class="connector"/>
+
+  <!-- Step 5: Loop — purple -->
+  <rect x="200" y="360" width="280" height="50" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+  <text class="label-title" x="340" y="382" text-anchor="middle" fill="#26215C">Loop through .gz files</text>
+  <text class="label-sub" x="340" y="399" text-anchor="middle" fill="#534AB7">z.namelist() — one file per hour</text>
+  <line x1="340" y1="410" x2="340" y2="438" class="connector"/>
+
+  <!-- Step 6: Decompress — teal -->
+  <rect x="200" y="440" width="280" height="50" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+  <text class="label-title" x="340" y="462" text-anchor="middle">Decompress each .gz → JSON</text>
+  <text class="label-sub" x="340" y="479" text-anchor="middle">gzip.open() rb · shutil.copyfileobj()</text>
+
+  <!-- Loop back arrow -->
+  <path d="M200 465 L140 465 L140 385 L200 385" class="connector-dashed" marker-end="none"/>
+  <line x1="140" y1="385" x2="198" y2="385" stroke="#C4C4C4" stroke-width="1.2" fill="none" marker-end="url(#arrow)"/>
+  <text class="loop-label" x="75" y="422" text-anchor="middle">next</text>
+  <text class="loop-label" x="75" y="436" text-anchor="middle">file</text>
+
+  <line x1="340" y1="490" x2="340" y2="518" class="connector"/>
+
+  <!-- Step 7: Delete temp — gray -->
+  <rect x="200" y="520" width="280" height="44" rx="8" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+  <text class="label-title" x="340" y="539" text-anchor="middle" fill="#444441">Delete temp/ folder</text>
+  <text class="label-sub" x="340" y="555" text-anchor="middle" fill="#5F5E5A">shutil.rmtree(temp_dir)</text>
+  <line x1="340" y1="564" x2="340" y2="592" class="connector"/>
+
+  <!-- Return -->
+  <rect x="220" y="592" width="240" height="24" rx="6" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+  <text class="label-sub" x="340" y="608" text-anchor="middle" fill="#444441">return True → trigger load step</text>
+</svg>
