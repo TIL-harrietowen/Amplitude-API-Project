@@ -159,14 +159,14 @@ Generate an access key for the IAM user (use case: **Local code**) and add the c
 
 ## Known issues
 
-- There is a redundant `requests.get()` call on line 42 of `main.py`. The response is never used as `extractJsonFiles()` makes its own internal API call. To be removed in a future update.
+- There are two separate API calls to Amplitude — one in `main.py` (line 42, used for logging response size) and one inside `extractJsonFiles()`. The fix is to make a single call in `main.py`, log the response size there, and pass the `response` object into `extractJsonFiles()` as an argument rather than making a second call.
 
 ---
 
 ## Planned improvements
 
 - Dynamic `start_time` / `end_time` to automatically pull yesterday's data
-- Remove redundant API call on line 42 of `main.py`
+- Refactor API call — make a single call in `main.py`, pass the `response` object into `extractJsonFiles()`, and remove the duplicate call inside the module
 
 ---
 
@@ -174,8 +174,8 @@ Generate an access key for the IAM user (use case: **Local code**) and add the c
 
 See `requirements.txt` for pinned versions. Key packages:
 
-| Package | Purpose |
-|---|---|
-| `requests` | HTTP requests to the Amplitude API |
-| `python-dotenv` | Loads credentials from `.env` |
-| `boto3` | AWS SDK — uploads files to S3 |
+| Package         | Purpose                            |
+| --------------- | ---------------------------------- |
+| `requests`      | HTTP requests to the Amplitude API |
+| `python-dotenv` | Loads credentials from `.env`      |
+| `boto3`         | AWS SDK — uploads files to S3      |
